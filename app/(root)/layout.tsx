@@ -9,7 +9,7 @@ export default async function SetupLayout({
 }) {
     const { userId } = auth()
     if (!userId) {
-        redirect("sing-in")
+        redirect("sign-in")
     }
 
     const store = await db.store.findFirst({
@@ -27,4 +27,5 @@ export default async function SetupLayout({
         {children}
         </>
     )
+
 }

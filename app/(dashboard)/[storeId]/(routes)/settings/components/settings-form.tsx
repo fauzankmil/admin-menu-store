@@ -1,14 +1,16 @@
 "use client";
 
 import * as z from "zod";
+import { useState } from "react";
+import axios from "axios";
+
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Store } from "@prisma/client";
-import { Trash, TrendingUpIcon } from "lucide-react";
+import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import {
   Form,
   FormControl,
@@ -19,7 +21,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
-import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { ApiAlert } from "@/components/ui/api-alert";
@@ -36,10 +37,10 @@ const formSchema = z.object({
 type SettingsFormValues = z.infer<typeof formSchema>;
 
 export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
-  const params = useParams()
-  const router = useRouter()
-  const origin = useOrigin()
-  
+  const params = useParams();
+  const router = useRouter();
+  const origin = useOrigin();
+
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -49,13 +50,13 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
   });
 
   const onSubmit = async (data: SettingsFormValues) => {
-    try{
+    try {
       setLoading(true);
       await axios.patch(`/api/stores/${params.storeId}`, data);
       router.refresh();
       toast.success("Toko berhasil di update");
     } catch (error) {
-      toast.error("Cek Kembali data yang diinput");
+      toast.error("Cek kembali data yang diinput");
     } finally {
       setLoading(false);
     }
@@ -67,7 +68,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
       await axios.delete(`/api/stores/${params.storeId}`);
       router.refresh();
       router.push("/");
-      toast.success("Toko berhasi dihapus");
+      toast.success("Toko berhasil dihapus");
     } catch (error) {
       toast.error("Cek kembali data dan koneksi mu");
     } finally {
@@ -78,19 +79,20 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
 
   return (
     <>
-
-    <AlertModal
-    isOpen={open}
-    onClose={() => setOpen(false)}
-    onConfirm={onDelete}
-    loading={loading}
+      <AlertModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onConfirm={onDelete}
+        loading={loading}
       />
       <div className="flex items-center justify-between">
         <Heading title="Settings" description="Atur Toko" />
-        <Button 
-        disabled={loading} 
-        variant="destructive" size="sm"
-         onClick={() => setOpen(true)}>
+        <Button
+          disabled={loading}
+          variant="destructive"
+          size="sm"
+          onClick={() => setOpen(true)}
+        >
           <Trash className="h-4 w-4" />
         </Button>
       </div>
@@ -119,16 +121,17 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
               )}
             />
           </div>
-          <Button disabled={loading} 
-          type="submit">
+          <Button disabled={loading} type="submit">
             Save
           </Button>
         </form>
       </Form>
       <Separator />
-      <ApiAlert title="PUBLIC_API_URL" description={`${origin}/api/${params.storeId}`}
-       variant="public" />
-
+      <ApiAlert
+        title="PUBLIC_API_URL"
+        description={`${origin}/api/${params.storeId}`}
+        variant="public"
+      />
     </>
   );
 };

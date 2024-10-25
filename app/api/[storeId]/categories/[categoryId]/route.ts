@@ -1,31 +1,31 @@
 import db from "@/lib/db";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
 export async function GET(
-    req: Request,
-    { params }: { params: { categoryId: string } }
-  ) {
-    try {
-      if (!params.categoryId) {
-        return new NextResponse("Category id dibutuhkan", { status: 400 });
-      }
-  
-      const category = await db.category.findUnique({
-        where: {
-          id: params.categoryId,
-        },
-        include: {
-          banner: true,
-        },
-      });
-  
-      return NextResponse.json(category);
-    } catch (error) {
-      console.log("[CATEGORY_GET]", error);
-      return new NextResponse("Internal error", { status: 500 });
+  req: Request,
+  { params }: { params: { categoryId: string } }
+) {
+  try {
+    if (!params.categoryId) {
+      return new NextResponse("Category id dibutuhkan", { status: 400 });
     }
+
+    const category = await db.category.findUnique({
+      where: {
+        id: params.categoryId,
+      },
+      include: {
+        banner: true,
+      },
+    });
+
+    return NextResponse.json(category);
+  } catch (error) {
+    console.log("[CATEGORY_GET]", error);
+    return new NextResponse("Internal error", { status: 500 });
   }
+}
 
 export async function PATCH(
   req: Request,
@@ -45,7 +45,7 @@ export async function PATCH(
     }
 
     if (!bannerId) {
-      return new NextResponse("Harus menginput banner Id", { status: 400 });
+      return new NextResponse("Harus menginput bannerId", { status: 400 });
     }
 
     if (!params.categoryId) {
@@ -92,7 +92,7 @@ export async function DELETE(
     }
 
     if (!params.categoryId) {
-      return new NextResponse("Categori id dibutuhkan", { status: 400 });
+      return new NextResponse("Category id dibutuhkan", { status: 400 });
     }
 
     const storeByUserId = await db.store.findFirst({
